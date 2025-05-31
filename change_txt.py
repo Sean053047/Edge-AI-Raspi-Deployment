@@ -15,5 +15,11 @@ with open('kitti_val.txt', 'r') as f:
     for line in new_lines:
         scene = '/'.join(line.split(' ')[0].split('/')[1:3])
         scene_set.add(scene)   
-    print(scene_set)
+    scene_list = sorted(list(scene_set))
+    
+with open('kitti_val_scene_list.txt', 'w') as f:
+    for scene in scene_list:
+        f.write(scene + '\n')
+    
+    
     
