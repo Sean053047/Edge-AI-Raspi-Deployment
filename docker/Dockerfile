@@ -60,16 +60,16 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh 
 # Add conda to path
 ENV PATH="/home/${UNAME}/miniconda3/bin:$PATH"
 # Create conda environment
-RUN conda create -yn raspi-ros python=3.10 pip
+RUN conda create -yn edge-ai python=3.10 pip
 # Set up shell to use conda environment by default
-SHELL ["conda", "run", "-n", "raspi-ros", "/bin/bash", "-c"]
+SHELL ["conda", "run", "-n", "edge-ai", "/bin/bash", "-c"]
 RUN pip install -r /tmp/requirements.txt \
     && pip install /tmp/hailo_setup/hailort-4.20.0-cp310-cp310-linux_aarch64.whl
 
 RUN conda init bash && \
-    echo "conda activate raspi-ros" >> ~/.bashrc && \ 
+    echo "conda activate edge-ai" >> ~/.bashrc && \ 
     echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-ENV PATH=/opt/conda/envs/raspi-ros/bin:$PATH
-ENV PYTHONPATH=/home/${UNAME}/miniconda3/envs/raspi-ros/lib/python3.10/site-packages:$PYTHONPATH
+ENV PATH=/opt/conda/envs/edge-ai/bin:$PATH
+ENV PYTHONPATH=/home/${UNAME}/miniconda3/envs/edge-ai/lib/python3.10/site-packages:$PYTHONPATH
 WORKDIR /workspace
 RUN sudo rosdep init && rosdep updpate

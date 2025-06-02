@@ -174,9 +174,7 @@ class CustomHQQTimmModel(BaseHQQModel):
             res = [block for block in all_blocks if (block in node)]
             node_to_block[node] = res[-1] if (len(res) > 0) else node
         # Set device-map
-        print(type(device))
         if isinstance(device, str):  # single device as str
-            print("in")
             device_map = {k: device for k in all_blocks + all_nodes}
             num_devices = 1
 

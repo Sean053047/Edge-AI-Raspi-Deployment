@@ -11,3 +11,6 @@ python version:3.10
 (To do)
 3. GPTQ quantize & dump
 4. Deploy on Raspi
+
+## Memo
+1. HQQ quantized model can't be transferred to onnx file.
