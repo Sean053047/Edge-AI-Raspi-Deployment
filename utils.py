@@ -1,4 +1,5 @@
 import cv2
+import random
 import numpy as np
 import os.path as osp
 from PIL import Image
@@ -30,6 +31,10 @@ def init_huggingface_model(pretrained:str='depth-anything/Depth-Anything-V2-Smal
     model = AutoModelForDepthEstimation.from_pretrained(pretrained)
     return image_processor, model
 
+def set_seed(seed=42):
+    torch.manual_seed(seed)
+    np.random.seed(seed)   
+    random.seed(seed)
 class CustomVKITTI2(Dataset):
     def __init__(self, data_root, filelist_path, mode, size=(518, 518)):
         self.mode = mode
