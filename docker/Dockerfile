@@ -72,4 +72,4 @@ RUN conda init bash && \
 ENV PATH=/opt/conda/envs/edge-ai/bin:$PATH
 ENV PYTHONPATH=/home/${UNAME}/miniconda3/envs/edge-ai/lib/python3.10/site-packages:$PYTHONPATH
 WORKDIR /workspace
-RUN sudo rosdep init && rosdep updpate
+RUN sudo rosdep init && rosdep update

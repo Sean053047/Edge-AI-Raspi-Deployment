@@ -6,3 +6,6 @@ torchvision
 numpy
 opencv-python
 accelerate
+timm
+torchinfo
+onnx
