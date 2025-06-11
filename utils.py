@@ -120,4 +120,4 @@ class CustomKITTI(Dataset):
         sample['image_path'] = self.filelist[item].split(' ')[0]
         
         return sample
-    
+

@@ -1,6 +1,7 @@
 #! /bin/bash
 
 docker run -it --rm \
+    --privileged \
     --name edge-ai \
     -v $PWD:/workspace \
     -v $HOME/.ssh/authorized_keys:/home/itri/.ssh/authorized_keys \

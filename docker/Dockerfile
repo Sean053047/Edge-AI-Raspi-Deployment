@@ -73,3 +73,11 @@ ENV PATH=/opt/conda/envs/edge-ai/bin:$PATH
 ENV PYTHONPATH=/home/${UNAME}/miniconda3/envs/edge-ai/lib/python3.10/site-packages:$PYTHONPATH
 WORKDIR /workspace
 RUN sudo rosdep init && rosdep update
+
+# RUN apt-get update && apt-get install -y \
+#     libopencv-dev \
+#     v4l-utils \
+#     libv4l-dev \
+#     ffmpeg \
+#     uvcdynctrl \
+    # && rm -rf /var/lib/apt/lists/*cl
