@@ -269,10 +269,10 @@ class CustomHQQHFModel(BaseHQQHFModel):
         if getattr(model, "hqq_quantized", False):
             print("Model was already quantized")
             return
-
+        
         # Set linear tags automatically
         cls.setup_model(model)
-
+        
         # Use the same quantization config for all linear layers. Use None to skip quantizing a specfic layer.
         if True in [(key in model.linear_tags) for key in quant_config.keys()]:
             # If the user doesn't specify a key from get_linear_tags, the layer is not quantized via (key, None)
@@ -283,7 +283,7 @@ class CustomHQQHFModel(BaseHQQHFModel):
         else:
             # Same quant_config for all layers
             patch_params = {k: quant_config for k in model.linear_tags}
-
+        
         # Get list of all nodes in order
         all_nodes = get_all_children_from_model(model, [])  # ordered nodes
         try:
@@ -299,19 +299,19 @@ class CustomHQQHFModel(BaseHQQHFModel):
             print(
                 "Default model structure not supported. Make sure you feed device as dictionary as {name_block: device}"
             )
-
+        
         if isinstance(
             device, dict
         ):  # input as {module block name (str): device (str or torch.device)}
             device_map = device
             num_devices = len(set([device_map[k] for k in device_map]))
             all_blocks = list(device_map.keys())
-
+        
         node_to_block = {}
         for node in all_nodes:
             res = [block for block in all_blocks if (block in node)]
             node_to_block[node] = res[-1] if (len(res) > 0) else node
-
+        
         # Set device-map
         if isinstance(device, str):  # single device as str
             device_map = {k: device for k in all_blocks + all_nodes}

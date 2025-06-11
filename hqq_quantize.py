@@ -37,11 +37,12 @@ def get_quant_config_deit(model, nbits=2, group_size=48):
         quant_config[f'pretrained.blocks.{i}.mlp.fc2'] = q2_config
     return quant_config
 
-def quantize_model(model, nbits=2, group_size=48, device='cuda'):
+def quantize_model(model, quant_config, device='cuda'):
     model.device = device
     model.dtype = torch.float32 
     # * Quantize pretrained weights
-    quant_config = get_quant_config_deit(model, nbits=nbits, group_size=group_size)
+    # from hqq.models.hf.base import AutoHQQHFModel
+    # AutoHQQHFModel.quantize_model(model, quant_config=quant_config, compute_dtype=torch.float32, device=str(device))
     AutoHQQTimmModel.quantize_model(model, quant_config=quant_config, compute_dtype=torch.float32, device=str(device))
     from hqq.utils.patching import prepare_for_inference
     prepare_for_inference(model)
@@ -61,13 +62,14 @@ def parse_args():
     parser.add_argument('--min-depth', type=float, default=0.001, help='Minimum depth for normalization')
     parser.add_argument("--grid-search", action='store_true', help="Enable grid search for quantization parameters")
     parser.add_argument("--quantize-only", action='store_true', help="Only quantize the model without evaluation")
+    parser.add_argument("--device", type=str, choices=['gpu', 'cpu'], help="Device to use for evaluation (e.g., 'cuda', 'cpu')")
     parser.add_argument("--gpu", type=int, default=0, help="GPU ID to use for evaluation")
     parser.add_argument("--save-dir", type=str, default='results', help="Directory to save results")
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_args()
-    device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
+    device = args.device if args.device == 'cuda' else args.device + f":{args.gpu}"
     filelist_path = 'kitti_val.txt'
     dataset = CustomKITTI(data_root='/data/kitti', filelist_path=filelist_path, mode='val', size=(518, 518))
     loader = DataLoader(
@@ -99,7 +101,8 @@ if __name__ == "__main__":
     else:
         model = init_model(encoder=args.encoder).to(device)
         model.eval()
-        model = quantize_model(model, nbits=args.nbits, group_size=args.group_size, device=device)        
+        quant_config = get_quant_config_deit(model, nbits=args.nbits, group_size=args.group_size)
+        model = quantize_model(model, quant_config=quant_config, device=device)        
         if args.quantize_only:
             summary(model, input_size=(1, 3, 518, 1722), device=device)
         else:
