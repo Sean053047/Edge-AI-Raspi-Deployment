@@ -9,6 +9,8 @@ docker run -it --rm \
     -v /lib/udev/rules.d:/lib/udev/rules.d \
     -v /lib/modules:/lib/modules \
     --device=/dev/hailo0:/dev/hailo0 \
+    --device=/dev/video0:/dev/video0 \
+    --device=/dev/video1:/dev/video1 \
     --net host \
     edge-ai \
     bash -c "sudo apt-get install -f && sudo service ssh start && bash"
