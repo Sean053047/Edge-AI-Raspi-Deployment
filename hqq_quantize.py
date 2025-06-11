@@ -69,7 +69,8 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    device = args.device if args.device == 'cuda' else args.device + f":{args.gpu}"
+    device = args.device if args.device == 'cpu' else f"cuda:{args.gpu}"
+    # device = torch.device(device)
     filelist_path = 'kitti_val.txt'
     dataset = CustomKITTI(data_root='/data/kitti', filelist_path=filelist_path, mode='val', size=(518, 518))
     loader = DataLoader(
@@ -101,6 +102,7 @@ if __name__ == "__main__":
     else:
         model = init_model(encoder=args.encoder).to(device)
         model.eval()
+        summary(model, input_size=(1, 3, 518, 1722), device=device)
         quant_config = get_quant_config_deit(model, nbits=args.nbits, group_size=args.group_size)
         model = quantize_model(model, quant_config=quant_config, device=device)        
         if args.quantize_only:
